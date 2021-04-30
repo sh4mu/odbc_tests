@@ -1,5 +1,6 @@
 #include <sql.h>
 #include <string>
+#include <string.h>
 #include <sqlext.h>
 
 #include "Statement.h"

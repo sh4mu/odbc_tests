@@ -93,8 +93,10 @@ static bool printException(SQLRETURN rc, SQLHANDLE handle, SQLSMALLINT handleTyp
             //printf("printException rc %d\n", rc);
 
             while (i <= numRecs && (rc = SQLGetDiagRec(handleType, handle, i, theDiagState, &nativeError, Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) 
-            {         
+            {   
+                char buf[1024]; sprintf(buf, "[%5.5s]", theDiagState);
                 printf("printException nativeError %d\n", nativeError);
+                printf("printException theDiagState %s\n", buf);
 
                 std::string theMessageTextAsString = std::string((char *)Msg,sizeof(Msg));
                     printf("printException MessageText %s\n", theMessageTextAsString.c_str());                
