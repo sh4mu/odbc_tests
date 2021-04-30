@@ -66,4 +66,47 @@ static bool chkReturnCode(SQLRETURN rc, SQLHENV henv, SQLHDBC hdbc, SQLHSTMT hst
     }
 
     return (bool)0;
-}  
+}
+
+/* 
+* Return true when SQL RC is not SQL_SUCCESS
+*/
+static bool printException(SQLRETURN rc, SQLHANDLE handle, SQLSMALLINT handleType)
+{
+    if (rc != SQL_SUCCESS && rc != SQL_NO_DATA_FOUND ) 
+    {
+            SQLLEN numRecs = 0;
+            SQLGetDiagField(handleType, handle, 0, SQL_DIAG_NUMBER, &numRecs, 0, 0);
+            printf("printException numRecs %d\n", numRecs);
+
+            //SQLCHAR* theDiagState=new SQLCHAR[50];
+            //theDiagState[0]='\0';
+            SQLCHAR theDiagState[6], Msg[SQL_MAX_MESSAGE_LENGTH];
+            SQLINTEGER nativeError=0;
+            //SQLCHAR* theMessageText = new SQLCHAR[1000];
+            SQLSMALLINT   i, MsgLen;
+
+            // Get the status records.
+            i = 1;  
+
+            //printf("printException rc %d, %d, %d, %d, %d\n", SQL_SUCCESS, SQL_SUCCESS_WITH_INFO, SQL_NO_DATA, SQL_ERROR, SQL_INVALID_HANDLE);
+            //printf("printException rc %d\n", rc);
+
+            while (i <= numRecs && (rc = SQLGetDiagRec(handleType, handle, i, theDiagState, &nativeError, Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) 
+            {         
+                printf("printException nativeError %d\n", nativeError);
+
+                std::string theMessageTextAsString = std::string((char *)Msg,sizeof(Msg));
+                    printf("printException MessageText %s\n", theMessageTextAsString.c_str());                
+
+                 i++;  
+            }  
+
+            //delete [] Msg;
+            //delete [] theDiagState;
+
+        return true;                
+    }
+
+    return false;
+}
