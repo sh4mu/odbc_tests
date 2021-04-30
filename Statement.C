@@ -14,20 +14,23 @@ void Statement::init(Environment* env)
     hstmt = SQL_NULL_HSTMT;
     mState = IDLE;
 
-    rc = SQLAllocStmt(mEnvironment->hdbc, &hstmt);
-    if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, SQL_NULL_HSTMT, "Unable to allocate a statement handle\n", __FILE__, __LINE__, 1)) {            
+    rc = SQLAllocStmt(mEnvironment->m_hdbc, &hstmt);
+    if (printException(rc, hstmt, SQL_HANDLE_STMT)) {
+//    if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, SQL_NULL_HSTMT, "Unable to allocate a statement handle\n", __FILE__, __LINE__, 1)) {            
         return;
     }
 
     printf("SQLAllocStmt %d \n", rc);            
 
     rc = SQLSetStmtAttr(hstmt, SQL_ATTR_QUERY_TIMEOUT, (SQLPOINTER)2, SQL_IS_UINTEGER);
-    if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, SQL_NULL_HSTMT, "Unable to allocate a statement handle\n", __FILE__, __LINE__, 1)) {            
+    if (printException(rc, hstmt, SQL_HANDLE_STMT)) {
+    //if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, SQL_NULL_HSTMT, "Unable to allocate a statement handle\n", __FILE__, __LINE__, 1)) {            
         return;
     }
 
     rc = SQLPrepare(hstmt,(UCHAR*) mSql.c_str(), SQL_NTS);
-    if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, hstmt, "Unable to SQLPrepare\n", __FILE__, __LINE__, 1)) {
+    if (printException(rc, hstmt, SQL_HANDLE_STMT)) {
+    //if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, hstmt, "Unable to SQLPrepare\n", __FILE__, __LINE__, 1)) {
         return;
     }
     
@@ -41,12 +44,17 @@ void Statement::executeStatement()
 
     /* Your application code here */
     rc = SQLExecute(hstmt);
-    printf("SQLExecute %d \n", rc);        
+    printf("SQLExecute %d \n", rc);     
 
-    if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, hstmt,"Unable to Exec Direct\n", __FILE__, __LINE__, 1)) {
+    if (printException(rc, hstmt, SQL_HANDLE_STMT)) 
+    {  
         mState = Statement::READY_NOK;
         return;
     }
+
+ //   if(chkReturnCode(rc, mEnvironment->henv, mEnvironment->hdbc, hstmt,"Unable to Exec Direct\n", __FILE__, __LINE__, 1)) 
+  //  {  
+   // }
 
     if (hstmt != SQL_NULL_HSTMT) {
         rc = SQLFreeStmt(hstmt, SQL_CLOSE);

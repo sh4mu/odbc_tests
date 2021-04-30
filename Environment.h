@@ -15,7 +15,7 @@ class Environment
     public:
         Environment() : 
             mConnectionString("DSN=ttdatasvr64;TTC_SERVER=0-0-2;TCP_PORT=14502"),
-            connOutLen(0), henv(SQL_NULL_HENV), hdbc(SQL_NULL_HDBC), mState(IDLE)
+            connOutLen(0), m_henv(SQL_NULL_HENV), m_hdbc(SQL_NULL_HDBC), mState(IDLE)
         {
         }
 
@@ -24,6 +24,7 @@ class Environment
         void init();
         void initEnv();
         void initConnect();
+        void disable();
         void disableEnv();
         void disableConnect();
 
@@ -32,9 +33,9 @@ class Environment
     
     public:
         /* General return code for the API */
-        SQLHENV henv;
+        SQLHENV m_henv;
         /* Environment handle */
-        SQLHDBC hdbc;
+        SQLHDBC m_hdbc;
         /* Connection string */
         string mConnectionString;
         /* Buffer for completed connection string */

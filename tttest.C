@@ -26,8 +26,8 @@ int main(int ac, char** av)
 
     env.executeStatement();
 
-    printf("Sleep for 10\n");
-    sleep(10);
+    printf("Sleep for 20\n");
+    sleep(20);
 
     env.executeStatement();
 
